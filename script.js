@@ -2,9 +2,9 @@
 //22635 cities in current.city.list.json
 
 //function to print current local time every second
-setInterval(function(){
-  let today = new Date();
-  let time = today.getHours(2) + ":" + today.getMinutes(2) + ":" + today.getSeconds(2) + "  your local time";
+setInterval(() => {
+  const today = new Date();
+  const time = today.getHours(2) + ":" + today.getMinutes(2) + ":" + today.getSeconds(2) + "  your local time";
   document.getElementById('time-text').textContent = time;
 }, 1000)
 
@@ -26,7 +26,7 @@ function City(name, country){
 }
 
 //http call to get array of cities locally
-let cityArray = [];
+const cityArray = [];
 
 let xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function(){
@@ -64,9 +64,9 @@ function selectCity(e){
     }
   };
   if(forecast.classList.contains('inactive')){
-    xhttp.open('GET', 'https://api.openweathermap.org/data/2.5/weather?q='+citySelection+'&appid=bfacc96b28036034f428cbe9a5293b1b');
+    xhttp.open('GET', `https://api.openweathermap.org/data/2.5/weather?q=${citySelection}&appid=bfacc96b28036034f428cbe9a5293b1b`);
   } else {
-    xhttp.open('GET', 'https://api.openweathermap.org/data/2.5/forecast?q='+citySelection+'&appid=bfacc96b28036034f428cbe9a5293b1b');
+    xhttp.open('GET', `https://api.openweathermap.org/data/2.5/forecast?q=${citySelection}&appid=bfacc96b28036034f428cbe9a5293b1b`);
   }
   xhttp.send();
   document.getElementById('city-input').value = "";
@@ -74,7 +74,7 @@ function selectCity(e){
 
 
 //function to delete dropdown box
-let elements = document.getElementsByClassName('dropdown-item');
+const elements = document.getElementsByClassName('dropdown-item');
 let	element;
 function deleteDropdown(){
 	while (element = elements[0]) {
@@ -85,33 +85,35 @@ function deleteDropdown(){
 
 
 //functions to choose between current and forecast
-let current = document.getElementById('current');
-let forecast = document.getElementById('forecast');
+const current = document.getElementById('current');
+const forecast = document.getElementById('forecast');
 current.addEventListener('click', runCurrent);
 forecast.addEventListener('click', runForecast);
 
-let hoursArray = document.querySelectorAll('.hours');
+const hoursArray = document.querySelectorAll('.hours');
 
 function runCurrent(){
   current.classList.toggle('inactive');
   forecast.classList.add('inactive');
-  for(i = 0; i < hoursArray.length; i++){
-    hoursArray[i].classList.add('hidden');
-  }
+  hoursArray.forEach(e => {
+    e.classList.add('hidden');
+  });
   deletePopups()
 }
+
+
 
 function runForecast(){
   forecast.classList.toggle('inactive');
   current.classList.add('inactive');
-  for(i = 0; i < hoursArray.length; i++){
-    hoursArray[i].classList.remove('hidden');
-  }
+  hoursArray.forEach(e => {
+    e.classList.remove('hidden');
+  });
 }
 
 //function to pick which hours under forecast
-hoursArray.forEach(function(e){
-  e.addEventListener('click', function(e){
+hoursArray.forEach(e => {
+  e.addEventListener('click', e => {
     e.target.parentNode.classList.remove('inactive');
     for(i = 0; i < hoursArray.length; i++){
       if(hoursArray[i] !== e.target.parentNode){
@@ -133,7 +135,6 @@ function forecastHour(){
 }
 
 
-
 //function to produce city search function real time
 const cityInput = document.getElementById('city-input');
 cityInput.addEventListener('keyup', valueCapture);
@@ -152,7 +153,7 @@ function valueCapture(e){
     //print dropdown list
     deleteDropdown();
     for(i = 0; i < dropdownList.length; i++){
-      document.getElementById('dropdown-list').innerHTML += '<li class="dropdown-item">'+dropdownList[i]+'</li>';
+      document.getElementById('dropdown-list').innerHTML += `<li class="dropdown-item">${dropdownList[i]}</li>`;
     }
     //select from dropdown list and fill in input field with selection
 		document.getElementById('dropdown-list').onclick = selectCity;
@@ -175,11 +176,11 @@ function createPopupCard(x){
 
   //function to remove one popup-container when x is clicked
   popupList.push(popup.containerDiv.firstChild.firstChild);
-  popupList.forEach(function(elem){
-    elem.addEventListener('click', function(e){
+  popupList.forEach((elem) => {
+    elem.addEventListener('click', (e) => {
       if(e.target.classList.contains('btn-text')){
         let toRemove = e.target.parentElement.parentElement.parentElement;
-        setTimeout(function(){ 
+        setTimeout(() => { 
           toRemove.remove(); 
         }, 290);
         toRemove.style.animationName = 'fadeout';
@@ -188,7 +189,6 @@ function createPopupCard(x){
     })
   });
 }
-
 
 
 //function to populate popup with current weather info
@@ -201,8 +201,9 @@ function currentWeather(x){
   map.panTo(center);
 
   //populating the Info Window with weather infor
-  weatherInfo = '<h4>'+x.name+'</h4>'+'<button class="btn-close"><p class="btn-text">x</p></button>'+'<p>'+(x.main.temp-273.15).toFixed(1)+' C'+'<p>'+x.weather[0].description+'</p>'+'<img class="center weather-image" src="http://openweathermap.org/img/wn/'+x.weather[0].icon+'.png"'+'alt="weather-image-placeholder" >';
+  weatherInfo = `<h4>${x.name}</h4><button class="btn-close"><p class="btn-text">x</p></button><p>${(x.main.temp-273.15).toFixed(1)} C<p>${x.weather[0].description}</p><img class="center weather-image" src="http://openweathermap.org/img/wn/${x.weather[0].icon}.png" alt="weather-image-placeholder" >`;
   
+  // weatherInfo = '<h4>'+x.name+'</h4>'+'<button class="btn-close"><p class="btn-text">x</p></button>'+'<p>'+(x.main.temp-273.15).toFixed(1)+' C'+'<p>'+x.weather[0].description+'</p>'+'<img class="center weather-image" src="http://openweathermap.org/img/wn/'+x.weather[0].icon+'.png"'+'alt="weather-image-placeholder" >';
   //call the Popup object, passing weatherInfo 
   createPopupCard(weatherInfo);
 }
@@ -210,12 +211,9 @@ function currentWeather(x){
 
 //function to remove all popup containers. Divs with class of 'popup-container'
 function deletePopups(){
-  let popupContainers = document.getElementsByClassName('popup-container');
-  let popupContainersArray = [].slice.call(popupContainers);
-  for(i = 0; i < popupContainersArray.length; i++){
-    let elem = popupContainersArray[i];
-    elem.parentNode.removeChild(elem);
-  }
+  const popupContainers = document.getElementsByClassName('popup-container');
+  const popupContainersArray = [].slice.call(popupContainers);
+  popupContainersArray.forEach(e => e.parentNode.removeChild(e));
 }
 
 
@@ -230,7 +228,7 @@ function forecastWeather(x){
 
   //populating the popup with the chosen forecast by hour
   weatherInfo = function(forecast, hour){
-    return '<h4>'+x.city.name+'</h4>'+'<button class="btn-close"><p class="btn-text">x</p></button>'+'<p>'+(x.list[forecast].main.temp-273.15).toFixed(1)+' C'+'<p>'+x.list[forecast].weather[0].description+'</p>'+'<img class="center weather-image" src="http://openweathermap.org/img/wn/'+x.list[forecast].weather[0].icon+'.png"'+'alt="weather-image-placeholder" >'+'<p>'+hour+' hours from now</p>';
+    return `<h4>${x.city.name}</h4><button class="btn-close"><p class="btn-text">x</p></button><p>${(x.list[forecast].main.temp-273.15).toFixed(1)} C<p>${x.list[forecast].weather[0].description}</p><img class="center weather-image" src="http://openweathermap.org/img/wn/${x.list[forecast].weather[0].icon}.png"+alt="weather-image-placeholder"><p>${hour} hours from now</p>`;
   }
 
   switch(chosenHourText) {
