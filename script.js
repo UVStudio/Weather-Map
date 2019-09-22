@@ -1,5 +1,6 @@
 //turn on server 'live-server'
 //22635 cities in current.city.list.json
+//
 
 //function to print current local time every second
 setInterval(() => {
